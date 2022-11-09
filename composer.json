@@ -1,8 +1,8 @@
 {
-    "name": "till/myelements",
+    "name": "seppzzz/myelements",
     "keywords": [
-        "till",
-        "Myelements"
+        "seppzzz",
+        "MyElements"
     ],
 	"extra": {
 		"installer-name": "xx",
@@ -14,7 +14,7 @@
     },
 	"autoload": {
 		"psr-4": {
-			"till\\myelements\\": "src/"
+			"seppzzz\\myelements\\": "src/"
 		}
 	}
 }
