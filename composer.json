@@ -1,0 +1,20 @@
+{
+    "name": "till/myelements",
+    "keywords": [
+        "till",
+        "Myelements"
+    ],
+	"extra": {
+		"installer-name": "xx",
+		"resources-dir": "_resources",
+		"expose": [
+			"javascript",
+			"css"
+        ]
+    },
+	"autoload": {
+		"psr-4": {
+			"till\\myelements\\": "src/"
+		}
+	}
+}

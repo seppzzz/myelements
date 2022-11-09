@@ -1,0 +1,26 @@
+---
+Name: myelements
+---
+
+MyElementPage:
+  allowed_elements:
+    - DNADesign\Elemental\Models\ElementContent
+    - PanImageElement
+    - BootstrapCarouselElement
+  extensions:
+    - DNADesign\Elemental\Extensions\ElementalPageExtension
+
+DNADesign\Elemental\Models\ElementContent:
+  inline_editable: false
+
+PanImageElement:
+  inline_editable: false
+
+BootstrapCarouselElement:
+  inline_editable: false
+
+DNADesign\Elemental\Models\BaseElement:
+  controller_template: 'MyElementHolder'
+  extensions:
+    - LayoutController
+    - BaseElementExtension
