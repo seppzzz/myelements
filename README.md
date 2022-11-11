@@ -11,7 +11,7 @@
 **Run the following command:**
 
 ```sh
-composer require seppzzz/myelements "dev-master"
+composer require seppzzz/myelements "dev-main"
 ```
 
 ## Screenshots
