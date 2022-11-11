@@ -127,7 +127,7 @@ class BootstrapCarouselElement extends BaseElement
 		
 		$gridFieldConfig = GridFieldConfig_RecordEditor::create();
 		$gridFieldConfig->removeComponentsByType('SilverStripe\Forms\GridField\GridFieldSortableHeader');
-		$gridFieldConfig->addComponent(new GridFieldStopHeaderSorting());
+		$gridFieldConfig->addComponent(new \GridFieldStopHeaderSorting());
 		$gridFieldConfig->removeComponentsByType(GridFieldFilterHeader::class);
 		$gridFieldConfig->addComponent(new GridFieldEditableColumns());
 		
@@ -165,7 +165,7 @@ class BootstrapCarouselElement extends BaseElement
 		$FieldBulkUpload->setUfSetup('setFolderName', 'Carousel-Images'); //->setUfConfig('sequentialUploads', true);	
 		$gridFieldConfig->addComponent($FieldBulkUpload);
 		$gridFieldConfig->addComponent(new \Colymba\BulkManager\BulkManager());
-		$gridFieldConfig->addComponent(new GridFieldLayoutHelper());
+		$gridFieldConfig->addComponent(new \GridFieldLayoutHelper());
 		
 		$fields->insertAfter(new Tab('Images', 'Images'), 'Main');
 		$fields->addFieldsToTab('Root.Images', [
