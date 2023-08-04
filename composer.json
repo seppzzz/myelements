@@ -9,7 +9,6 @@
         "silverstripe/framework": "^4",
         "silverstripe/cms": "^4",
         "dnadesign/silverstripe-elemental": "^4",
-	"colymba/gridfield-bulk-editing-tools": "3.x-dev",
 	"symbiote/silverstripe-gridfieldextensions": "^3",
 	"undefinedoffset/sortablegridfield": "2.0.x-dev"
     },
