@@ -1,0 +1,42 @@
+---
+Name: myelements
+---
+
+MyElementPage:
+  allowed_elements:
+    - DNADesign\Elemental\Models\ElementContent
+    - Seppzzz\MyElements\PanImageElement
+    - Seppzzz\MyElements\BootstrapCarouselElement
+    - Seppzzz\MyElements\BootstrapMediaCarouselElement
+  extensions:
+    - DNADesign\Elemental\Extensions\ElementalPageExtension
+
+DNADesign\Elemental\Models\ElementContent:
+  inline_editable: false
+
+Seppzzz\MyElements\PanImageElement:
+  inline_editable: false
+
+Seppzzz\MyElements\BootstrapCarouselElement:
+  inline_editable: false
+
+Seppzzz\MyElements\BootstrapMediaCarouselElement:
+  inline_editable: false
+
+DNADesign\Elemental\Models\BaseElement:
+  controller_template: 'MyElementHolder'
+  enable_title_in_template: true
+  extensions:
+    - LayoutController
+    - Seppzzz\MyElements\Extensions\BaseElementExtension
+
+
+
+---
+Name: myelemental_icons
+After: 'elemental'
+---
+
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_css:
+    - vendor/seppzzz/myelements/src/icons/icons.css
