@@ -65,6 +65,7 @@ class CarouselMediaVideo extends MediaDataObject
 
     private static $db = [
         'Title' => 'Varchar',
+		'Display' => 'Boolean',
         'Description' => 'Text',
 		'AdditionalText' => 'Varchar',
         'SourceURL' => 'ExternalURL',
@@ -180,6 +181,7 @@ class CarouselMediaVideo extends MediaDataObject
                     Tab::create(
                         'Main',
                         TextField::create('Title', $this->fieldLabel('Title'))->setCustomValidationMessage('You missed me.'),
+						CheckboxField::create('Display', 'Display'),
                         TextareaField::create('Description', $this->fieldLabel('Description')),
 						TextField::create('AdditionalText', $this->fieldLabel('AdditionalText')),
                         FieldGroup::create(

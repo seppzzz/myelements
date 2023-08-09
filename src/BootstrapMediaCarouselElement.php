@@ -2,6 +2,10 @@
 
 namespace Seppzzz\MyElements;
 
+use Seppzzz\MyElements\CarouselMediaVideo;
+use Seppzzz\MyElements\CarouselMediaImage; 
+
+
 use DNADesign\Elemental\Models\BaseElement;
 
 use SilverStripe\Forms\GroupedDropdownField;
@@ -40,6 +44,15 @@ use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 use Symbiote\GridFieldExtensions\GridFieldEditableColumns;
 use Symbiote\GridFieldExtensions\GridFieldAddNewMultiClass;
 use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
+
+use SilverStripe\View\ArrayData;
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\Queries\SQLSelect;
+use SilverStripe\Assets\Image;
+
+use SilverStripe\ORM\ArrayList;
+
+
 
 
 use SilverStripe\Dev\Debug;
@@ -280,6 +293,67 @@ class BootstrapMediaCarouselElement extends BaseElement
 			default:
 				return $number . '<sup>th</sup>';
 		}
+	}
+	
+	
+	public function HasMultipleDisplayMediaObjects($returnFlag)
+    {
+        $displayMediaObjects = [];
+
+        $imageObjects = $this->MediaDataObjects()
+            ->filter('ClassName', CarouselMediaImage::class);
+        $videoObjects = $this->MediaDataObjects()
+            ->filter('ClassName', CarouselMediaVideo::class);
+
+        $displayMediaObjects = array_merge($displayMediaObjects, $imageObjects->toArray());
+        $displayMediaObjects = array_merge($displayMediaObjects, $videoObjects->toArray());
+		
+		//Debug::show($displayMediaObjects);
+
+        $displayMediaObjectsFiltered = array_filter($displayMediaObjects, function ($object) {
+            return $object->Display == 1;
+        });
+		
+		//Debug::show($displayMediaObjects);
+		if($returnFlag == 1){
+			return count($displayMediaObjectsFiltered) > 1;
+		}else{
+			return count($displayMediaObjectsFiltered);
+		}
+    }
+	
+	public function getVisibleMediaObjects() {
+
+		$classes = [ 'CarouselMediaVideo', 'CarouselMediaImage' ];
+		$dataList = new ArrayList();
+
+		foreach ( $classes as $class ) {
+			$query = SQLSelect::create()->addFrom( $class )->addWhere( [ "Display" => 1 ] );
+			$result = $query->execute();
+
+			$tempclass = 'Seppzzz\MyElements\\' . $class;
+			$instance = new $tempclass();
+			$singularName = $instance->getSingularName();
+
+			// Iterate over results for the current class
+			foreach ( $result as $row ) {
+				$rowData = [];
+				foreach ( $row as $key => $value ) {
+					$rowData[ $key ] = $value;
+					// Create an Image object if ImageID exists in CarouselMediaImage
+					if ( $class === 'CarouselMediaImage' && $key === 'ImageID' ) {
+						$rowData[ 'Image' ] = Image::get()->byID( $value );
+					}
+				}
+				// Add the 'Type' key and value
+				$rowData[ 'Type' ] = $singularName;
+
+				$dataList->push( ArrayData::create( $rowData ) );
+			}
+		}
+		
+		//Debug::show($dataList);
+		return $dataList;
 	}
 	
 	
