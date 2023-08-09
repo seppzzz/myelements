@@ -5,6 +5,7 @@ namespace Seppzzz\MyElements;
 use DNADesign\Elemental\Models\BaseElement;
 
 use SilverStripe\Forms\GroupedDropdownField;
+use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\TextField;
 use Silverstripe\Forms\NumericField;
@@ -20,6 +21,7 @@ use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\Forms\GridField\GridFieldPageCount;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 
 use SilverStripe\ORM\FieldType\DBField;
@@ -61,7 +63,8 @@ class BootstrapCarouselElement extends BaseElement
 		'Transition' => 'Varchar',
 		'Hide' => 'Boolean',
 		'Fade' => 'Boolean',
-		'Indicators' => 'Boolean'
+		'Indicators' => 'Boolean',
+		'Crop' => 'Int'
     ];
 	
 	 private static $defaults = [
@@ -81,8 +84,8 @@ class BootstrapCarouselElement extends BaseElement
     ];
 	
 	
-	 private static $casting = [
-        //'SliderInterval' => 'Varchar',
+	private static $casting = [
+		 //'addOrdinalSuffix' => 'HTMLText'
     ];
     
 	
@@ -112,6 +115,12 @@ class BootstrapCarouselElement extends BaseElement
 		$fields->insertAfter(TextField::create('SliderInterval' ,'SliderInterval ( sec )'), 'PaddingBottom');
 		$fields->insertAfter(TextField::create('Transition','Transition ( sec )'), 'SliderInterval');
 		
+		$crop = OptionsetField::create('Crop', 'Crop', ['0' => 'no Crop', '1' => '16:9', '2' => '4:3', '3' => '5:2'])->setTitle('Crop');
+		
+		$fields->insertAfter($crop, 'Transition');
+		
+
+		
 		 
 		/*
 		$dropdown =  \SilverStripe\Forms\GroupedDropdownField::create(
@@ -125,11 +134,19 @@ class BootstrapCarouselElement extends BaseElement
 		*/
 		
 		
-		$gridFieldConfig = GridFieldConfig_RecordEditor::create();
+		$gridFieldConfig = GridFieldConfig_RecordEditor::create(); // create(100)
 		$gridFieldConfig->removeComponentsByType('SilverStripe\Forms\GridField\GridFieldSortableHeader');
+		$gridFieldConfig->removeComponentsByType('SilverStripe\Forms\GridField\GridFieldAddNewButton');
+		$gridFieldConfig->removeComponentsByType('SilverStripe\Forms\GridField\GridFieldFilterHeader');
 		$gridFieldConfig->addComponent(new \GridFieldStopHeaderSorting());
 		$gridFieldConfig->removeComponentsByType(GridFieldFilterHeader::class);
 		$gridFieldConfig->addComponent(new GridFieldEditableColumns());
+		
+		$gridFieldConfig->removeComponentsByType(GridFieldPaginator::class);
+		$gridFieldConfig->removeComponentsByType(GridFieldPageCount::class);
+		
+		//$paginator = $gridField->getComponentByType('GridFieldPaginator');
+    	//$paginator->setItemsPerPage(15); // Items per page.
 		
 		$items = $this->CarouselImages();
 		if (class_exists('Symbiote\GridFieldExtensions\GridFieldOrderableRows') && !$items instanceof UnsavedRelationList) {
@@ -161,7 +178,7 @@ class BootstrapCarouselElement extends BaseElement
 		
 		
 		
-		$FieldBulkUpload = new \Colymba\BulkUpload\BulkUploader(); // 'MyImages'
+		$FieldBulkUpload = new \Colymba\BulkUpload\BulkUploader(null, null, true); // 'MyImages'
 		$FieldBulkUpload->setUfSetup('setFolderName', 'Carousel-Images'); //->setUfConfig('sequentialUploads', true);	
 		$gridFieldConfig->addComponent($FieldBulkUpload);
 		$gridFieldConfig->addComponent(new \Colymba\BulkManager\BulkManager());
@@ -221,6 +238,68 @@ class BootstrapCarouselElement extends BaseElement
 		return $value;
 		
 	}
+	
+	
+	
+	public function getCroppedHeight($value = '')
+	{
+		//'0' => 'no Crop', '1' => '16:9', '2' => '4:3', '3' => '5:2', '4' => '1:1', '5' => '2:3'
+		
+		switch($value){
+			case 0: // no crop
+				return '0';
+				break;
+			case 1: // 16:9
+				return '675';
+				break;
+			case 2: // 4:3
+				return '900';
+				break;
+			case 3: // 5:2
+				return '480';
+				break;
+			case 4: // 1:1
+				return '1200';
+				break;
+			case 5: // 2:3
+				return '1800';
+				break;
+		}
+		return '0';
+		
+	}
+
+	
+	
+	
+	public function addOrdinalSuffix($number) {
+		
+		if (!is_numeric($number)) {
+			return $number; // Return input as is if not a number
+		}
+
+		// Handle special "teen" numbers (11, 12, 13)
+		if ($number % 100 >= 11 && $number % 100 <= 13) {
+			return $number . 'th';
+		}
+
+		// Get the last digit of the number
+		$lastDigit = $number % 10;
+
+		// Determine the suffix based on the last digit
+		switch ($lastDigit) {
+			case 1:
+				return $number . '<sup>st</sup>';
+			case 2:
+				return $number . '<sup>nd</sup>';
+			case 3:
+				return $number . '<sup>rd</sup>';
+			default:
+				return $number . '<sup>th</sup>';
+		}
+	}
+	
+	
 	
 	
 	public function onBeforeWrite() 

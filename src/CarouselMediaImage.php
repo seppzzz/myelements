@@ -14,11 +14,11 @@ use Silverstripe\Forms\CheckboxField;
 use SilverStripe\Dev\Debug;
 
 
-class CarouselImage extends DataObject {
+class CarouselMediaImage extends MediaDataObject {
 	
-	private static $table_name = 'CarouselImage';
-	private static $singular_name = 'Image';
-	private static $plural_name = 'Images';
+	private static $table_name = 'CarouselMediaImage';
+	private static $singular_name = 'MediaImage';
+	private static $plural_name = 'MediaImages';
 	
 	/*
 	public function canEdit($member = null) {
@@ -43,12 +43,13 @@ class CarouselImage extends DataObject {
 		'Title' => 'Varchar(255)',
 		'Caption' => 'Varchar(255)',
 		'Display' => 'Boolean',
-		'IsOverlayText' => 'Boolean'
+		'IsOverlayText' => 'Boolean',
+		//'Crop' => 'Int'
 	];
 	
 	private static $has_one = [
 		'Image' => Image::class,
-		'BootstrapCarouselElement' => BootstrapCarouselElement::class
+		//'BootstrapCarouselElement' => BootstrapCarouselElement::class
 	];
 	
 	private static $cascade_deletes = [
@@ -69,17 +70,17 @@ class CarouselImage extends DataObject {
 		
   		$fields = parent::getCMSFields();
 		
-		$fields->removeFieldFromTab('Root.Main', 'BootstrapCarouselElementID');
+		//$fields->removeFieldFromTab('Root.Main', 'BootstrapCarouselElementID');
 		$fields->removeFieldFromTab('Root.Main', 'Caption');
-		$fields->removeFieldFromTab('Root.Main', 'SortOrder');
-		//$fields->removeByName('Crop');
+		//$fields->removeFieldFromTab('Root.Main', 'SortOrder');
+		$fields->removeByName('MediaCarouselElement');
 		
 		//$crop = OptionsetField::create('Crop', 'Crop', ['0' => 'no Crop', '1' => '16:9', '2' => '4:3', '3' => '5:2'])->setTitle('Crop');
 		
 
 		$ImageField = new UploadField('Image', 'Image');
 		
-		$ImageField->setFolderName('Carousel-Images');
+		$ImageField->setFolderName('Carousel-Media-Images');
 		
 		$ImageField->getValidator()->setAllowedExtensions(['jpeg', 'jpg', 'png', 'gif']);
 		
@@ -114,6 +115,19 @@ class CarouselImage extends DataObject {
 		//return $this->Image()->SetRatioSize(40,40);
 		// $thumb = $this->Image()->ThumbnailIcon(75,40);
 	}
+	
+	
+	public static function getIconClass()
+    {
+         return 'fa fa-picture-o'; 
+		
+		//return '<span class="fa fa-image"</span>'; // Font Awesome icon for images
+    }
+	
+	public static function getSingularName()
+    {
+        return self::$singular_name;
+    }
 	
 	
 	

@@ -28,7 +28,7 @@ class BaseElementExtension extends DataExtension {
 		//'BgColor' => Color::class
     ];
 	
-	public function updateCMSFields(Forms\FieldList $fields) 
+	public function updateCMSFields(FieldList $fields) 
 	{
 		/*
 		$fields->removeByName('TopMargin');
@@ -55,6 +55,9 @@ class BaseElementExtension extends DataExtension {
 		*/
 		
 	}
+	
+	
+	
 	
 	
 	

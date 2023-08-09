@@ -8,6 +8,7 @@ MyElementPage:
     - Seppzzz\MyElements\PanImageElement
     - Seppzzz\MyElements\BootstrapCarouselElement
     - Seppzzz\MyElements\BootstrapMediaCarouselElement
+    - VideoElement
   extensions:
     - DNADesign\Elemental\Extensions\ElementalPageExtension
 

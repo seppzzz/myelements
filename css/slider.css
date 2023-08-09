@@ -19,10 +19,27 @@
 	font-style: italic;
 	font-size: 20px;
 }
+
 .crsl_slide-counter {
-	font-size: 40px;
-	line-height: 46px;
+	font-size: 50px;
+	line-height: 50px;
 }
+
+.crsl_slide-counter sup {
+	font-size: 50%!important;
+	position: relative;
+	/*vertical-align: baseline;*/
+	top: -0.8em;
+	padding-right: 4px;
+}
+
+.crsl_slide-counter span {
+	font-size: 60%!important;
+	padding-left: 6px;
+}
+
+
+
 /*
 .backlink.zoom {
 	-webkit-transform: scale(1.8);
@@ -124,8 +141,6 @@ transform: scale(1.8);  /* Firefox 16+, IE 10+, Opera 12.10+ */
 	
 
 @media (max-width: 120em) {
-	
-	
 	.carousel-control-next-icon, .carousel-control-prev-icon {
 	-webkit-transform: scale(1.5);  /* Chrome, Safari 3.1+ */
 	-moz-transform: scale(1.5);  /* Firefox 3.5+ */
@@ -133,7 +148,6 @@ transform: scale(1.8);  /* Firefox 16+, IE 10+, Opera 12.10+ */
 	-o-transform: scale(1.5);  /* Opera 10.50-12.00 */
 	transform: scale(1.5);  /* Firefox 16+, IE 10+, Opera 12.10+ */
 	}
-	
 }	
 
 @media (max-width: 85.9em) {
@@ -153,6 +167,11 @@ transform: scale(1.8);  /* Firefox 16+, IE 10+, Opera 12.10+ */
 	-ms-transform: scale(2);  /* IE 9 */
 	-o-transform: scale(2);  /* Opera 10.50-12.00 */
 	transform: scale(1.5);  /* Firefox 16+, IE 10+, Opera 12.10+ */
+	}
+	
+	.crsl_slide-counter {
+	font-size: 35px;
+	line-height: 40px;
 	}
 
 }
@@ -176,6 +195,11 @@ transform: scale(1.8);  /* Firefox 16+, IE 10+, Opera 12.10+ */
 	-o-transform: scale(5);  /* Opera 10.50-12.00 */
 	transform: scale(5);  /* Firefox 16+, IE 10+, Opera 12.10+ */
 	}
+	
+	.crsl_slide-counter {
+	font-size: 30px;
+	line-height: 35px;
+	}
 
 }
 
@@ -198,6 +222,11 @@ transform: scale(1.8);  /* Firefox 16+, IE 10+, Opera 12.10+ */
 	-ms-transform: scale(4);  /* IE 9 */
 	-o-transform: scale(4);  /* Opera 10.50-12.00 */
 	transform: scale(6);  /* Firefox 16+, IE 10+, Opera 12.10+ */
+	}
+	
+	.crsl_slide-counter {
+	font-size: 25px;
+	line-height: 30px;
 	}
 }
 

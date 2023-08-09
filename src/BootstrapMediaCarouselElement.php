@@ -6,6 +6,7 @@ use DNADesign\Elemental\Models\BaseElement;
 
 use SilverStripe\Forms\GroupedDropdownField;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
 use Silverstripe\Forms\NumericField;
 use SilverStripe\Forms\LiteralField;
@@ -15,12 +16,18 @@ use Silverstripe\Forms\HeaderField;
 use SilverStripe\Forms\Tab;
 
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
+
 
 use SilverStripe\ORM\FieldType\DBField;
 
@@ -31,6 +38,9 @@ use Colymba\BulkUpload\BulkUploader;
 	
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 use Symbiote\GridFieldExtensions\GridFieldEditableColumns;
+use Symbiote\GridFieldExtensions\GridFieldAddNewMultiClass;
+use Symbiote\GridFieldExtensions\GridFieldTitleHeader;
+
 
 use SilverStripe\Dev\Debug;
 //use SilverStripe\Dev\Backtrace;
@@ -61,23 +71,25 @@ class BootstrapMediaCarouselElement extends BaseElement
 		'Transition' => 'Varchar',
 		'Hide' => 'Boolean',
 		'Fade' => 'Boolean',
-		'Indicators' => 'Boolean'
+		'Indicators' => 'Boolean',
+		'Crop' => 'Int'
     ];
 	
 	 private static $defaults = [
         'SliderInterval' => '4',
 		'Transition' => '1.6',
-		//'Height' => '400',
 		'Fade' => 1,
 		'Indicators' => 0
     ];
 	
-	private static $has_many = [
+	private static $many_many = [
 		'MediaDataObjects' => MediaDataObject::class
 	];
 	
-	private static $owns = [
-        'MediaDataObjects',
+	private static $many_many_extraFields = [
+        'MediaDataObjects' => [
+          'SortOrder' => 'Int'
+        ]
     ];
 	
 	
@@ -91,12 +103,6 @@ class BootstrapMediaCarouselElement extends BaseElement
     {
         return $this->getField('SliderInterval') * 1000 ;
     }
-	
-	/*
-    public function setSliderInterval($value)
-    {
-        return $this->setField('SliderInterval', $value * 1000);
-    }*/
 	
 	
 	
@@ -112,65 +118,62 @@ class BootstrapMediaCarouselElement extends BaseElement
 		$fields->insertAfter(TextField::create('SliderInterval' ,'SliderInterval ( sec )'), 'PaddingBottom');
 		$fields->insertAfter(TextField::create('Transition','Transition ( sec )'), 'SliderInterval');
 		
-		 
-		/*
-		$dropdown =  \SilverStripe\Forms\GroupedDropdownField::create(
-			'ProjectID',
-			'Project',
-			$subcategoryArray
+		$crop = OptionsetField::create('Crop', 'Crop', ['0' => 'no Crop', '1' => '16:9', '2' => '4:3', '3' => '5:2'])->setTitle('Crop');
+		
+		$fields->insertAfter($crop, 'Transition');
+		
+		
+		
+		$dataColumns = new GridFieldDataColumns();
+		$dataColumns->setDisplayFields(
+			[
+			'Thumbnail' => 'Thumbnail',
+			'Icon' => [
+				'title' => 'Type',
+				'callback' => function ($record, $column, $grid) {
+					$iconClass = $record->getIconClass();
+					$singularName = $record->getSingularName();
+					return LiteralField::create('Icon', '<i class="' . $iconClass . ' fa-lg mr-3" aria-hidden="true"> </i>'.$singularName);
+					}
+				],
+			'Title' => 'Title'
+			]
+		);
+
+		$autocompleter = new GridFieldAddExistingAutocompleter('toolbar-header-right', ['Title']);
+		$autocompleter->setResultsFormat('$Title ($ClassName)');
+
+
+		$multiClassConfig = new GridFieldAddNewMultiClass();
+		$multiClassConfig->setClasses([
+			CarouselMediaImage::class,
+			CarouselMediaVideo::class,
+		]);
+
+
+		$config = GridFieldConfig::create()
+			->removeComponentsByType(GridFieldAddNewButton::class)
+			->addComponents(
+				$multiClassConfig,
+				new GridFieldToolbarHeader(),
+				new GridFieldDetailForm(),
+				new GridFieldEditButton(),
+				new GridFieldDeleteAction('unlinkrelation'),
+				new GridFieldDeleteAction(),
+				new GridFieldTitleHeader(),
+				new GridFieldOrderableRows('SortOrder'),
+				$autocompleter,
+				$dataColumns,
+				new \GridFieldLayoutHelper()
 			);
-		
-		$dropdown->setEmptyString('Select a Project...')
-		$fields->insertAfter($dropdown, 'Title');	
-		*/
-		
-		
-		$gridFieldConfig = GridFieldConfig_RecordEditor::create();
-		$gridFieldConfig->removeComponentsByType('SilverStripe\Forms\GridField\GridFieldSortableHeader');
-		$gridFieldConfig->addComponent(new \GridFieldStopHeaderSorting());
-		$gridFieldConfig->removeComponentsByType(GridFieldFilterHeader::class);
-		$gridFieldConfig->addComponent(new GridFieldEditableColumns());
-		
-		$items = $this->MediaDataObjects();
-		if (class_exists('Symbiote\GridFieldExtensions\GridFieldOrderableRows') && !$items instanceof UnsavedRelationList) {
-            $gridFieldConfig->addComponent(new GridFieldOrderableRows('SortOrder'));
-        }
-		
-		$gridfield = new GridField('Media', 'Media', $this->MediaDataObjects()->sort("SortOrder"), $gridFieldConfig);
-		
-		
-		$gridFieldConfig->getComponentByType('Symbiote\GridFieldExtensions\GridFieldEditableColumns')->setDisplayFields(array(
-			
-			/*'Title' => array(
-					'callback' => function ($record, $column, $gridfield) {
-					return new TextField('Title', 'Title');
-					},
-					'title' => 'Titel'
-				),*/
-			
-			'Display' => array(
-					'callback' => function ($record, $column, $gridfield) {
-						$cb = new CheckboxField('Display', 'Display');
-						$cb->addExtraClass('project-cb');
-					return $cb;
-					},
-					'title' => 'Display'
-				)
-		));
-		
-		
-		
-		
-		//$FieldBulkUpload = new \Colymba\BulkUpload\BulkUploader(); // 'MyImages'
-		//$FieldBulkUpload->setUfSetup('setFolderName', 'Carousel-Block-Media'); //->setUfConfig('sequentialUploads', true);	
-		//$gridFieldConfig->addComponent($FieldBulkUpload);
-		//$gridFieldConfig->addComponent(new \Colymba\BulkManager\BulkManager());
-		$gridFieldConfig->addComponent(new \GridFieldLayoutHelper());
-		
+
+		$mediaGridField = GridField::create('SliderMedia', "SliderMedia", $this->MediaDataObjects(), $config);
+
 		$fields->insertAfter(new Tab('Media', 'Media'), 'Main');
 		$fields->addFieldsToTab('Root.Media', [
-			$gridfield
+			$mediaGridField
 		]);
+		
 		
 		/*
 		$fields->insertAfter(new Tab('Meta', 'Meta'), 'Settings');
@@ -220,6 +223,62 @@ class BootstrapMediaCarouselElement extends BaseElement
 		
 		return $value;
 		
+	}
+	
+	
+	public function getCroppedHeight($value = '')
+	{
+		//'0' => 'no Crop', '1' => '16:9', '2' => '4:3', '3' => '5:2', '4' => '1:1', '5' => '2:3'
+		
+		switch($value){
+			case 0: // no crop
+				return '0';
+				break;
+			case 1: // 16:9
+				return '675';
+				break;
+			case 2: // 4:3
+				return '900';
+				break;
+			case 3: // 5:2
+				return '480';
+				break;
+			case 4: // 1:1
+				return '1200';
+				break;
+			case 5: // 2:3
+				return '1800';
+				break;
+		}
+		return '0';
+		
+	}
+	
+	public function addOrdinalSuffix($number) {
+		
+		if (!is_numeric($number)) {
+			return $number; // Return input as is if not a number
+		}
+
+		// Handle special "teen" numbers (11, 12, 13)
+		if ($number % 100 >= 11 && $number % 100 <= 13) {
+			return $number . 'th';
+		}
+
+		// Get the last digit of the number
+		$lastDigit = $number % 10;
+
+		// Determine the suffix based on the last digit
+		switch ($lastDigit) {
+			case 1:
+				return $number . '<sup>st</sup>';
+			case 2:
+				return $number . '<sup>nd</sup>';
+			case 3:
+				return $number . '<sup>rd</sup>';
+			default:
+				return $number . '<sup>th</sup>';
+		}
 	}
 	
 	
