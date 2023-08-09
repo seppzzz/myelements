@@ -461,9 +461,9 @@ class CarouselMediaVideo extends MediaDataObject
         $url = ltrim($url, '/');
         $file = Director::getAbsFile($url);
         $pathInfo = pathinfo($file);
-        if (!in_array(strtolower($pathInfo['extension']),['jpg', 'jpeg', 'png'])) {
-            return null;
-        }
+       // if (!in_array(strtolower($pathInfo['extension']),['jpg', 'jpeg', 'png'])) {
+           // return null;
+       // }
         //$fileName = $pathInfo['filename'];
 		//$fileName = $this->URLSegment.'-'.basename($this->EmbedThumbnailURL);
 		//$fileName = $this->URLSegment.'-'.$this->ID.'.jpg'; //.basename($this->EmbedThumbnailURL);

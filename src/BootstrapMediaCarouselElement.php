@@ -127,7 +127,7 @@ class BootstrapMediaCarouselElement extends BaseElement
 		$dataColumns = new GridFieldDataColumns();
 		$dataColumns->setDisplayFields(
 			[
-			'Thumbnail' => 'Thumbnail',
+			
 			'Icon' => [
 				'title' => 'Type',
 				'callback' => function ($record, $column, $grid) {
@@ -136,6 +136,7 @@ class BootstrapMediaCarouselElement extends BaseElement
 					return LiteralField::create('Icon', '<i class="' . $iconClass . ' fa-lg mr-3" aria-hidden="true"> </i>'.$singularName);
 					}
 				],
+			'Thumbnail' => 'Thumbnail',
 			'Title' => 'Title'
 			]
 		);

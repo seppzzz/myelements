@@ -8,7 +8,7 @@
 	<!--start carousel-container-->
 	<div class="carousel-container">  
 	
-		<div id="carousel_{$ID}" class="carousel  <% if $Fade %>carousel-fade<% else %> slide <% end_if %> w-100 rounded" data-ride="carousel" data-interval="<% if $SliderInterval %>$MySliderInterval()<% else %>false<% end_if %>" stop-on-hover="1" data-transition="$Transition"  style="transition-duration: {$Transition}s; background-color: lightgray;">
+		<div id="carousel_{$ID}" class="carousel  <% if $Fade %>carousel-fade<% else %> slide <% end_if %> w-100 rounded" data-ride="carousel" data-interval="<% if $SliderInterval %>$MySliderInterval()<% else %>false<% end_if %>" stop-on-hover="1" data-transition="$Transition"  style="transition-duration: {$Transition}s; ">
 							
 							
 			<% if $Indicators %>
@@ -60,7 +60,9 @@
 						<div class="carousel-item  img-fluid w-100 rounded <% if $First %>	active <% end_if %>	<% if $Top.Fade %> d-block <% end_if %> " style="transition-duration: {$Top.Transition}s;">			
 							
 							
-							<iframe width="600" height="413" src="https://www.youtube.com/embed/9QdYW0IjrEk?feature=oembed" frameborder="0" allow="accelerometer; autoplay=1; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" title="Baila Nova - A Felicidade (Antônio Carlos Jobim &amp; Moraes)"></iframe>
+							<div class="video-container roundedx" style="padding-bottom: {$EmbedAspectRatio}%;">
+								$EmbedHTML
+							</div>
 							
 							
 							<div class="carousel-caption d-none d-md-blockx">
