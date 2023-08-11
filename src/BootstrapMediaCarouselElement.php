@@ -52,11 +52,11 @@ use SilverStripe\Assets\Image;
 
 use SilverStripe\ORM\ArrayList;
 
-
+use DirectoryIterator;
 
 
 use SilverStripe\Dev\Debug;
-//use SilverStripe\Dev\Backtrace;
+use SilverStripe\Dev\Backtrace;
 
 //Backtrace::backtrace();
 // prints a calls-stack
@@ -121,7 +121,6 @@ class BootstrapMediaCarouselElement extends BaseElement
 	
 	public function getCMSFields()
     {
-		
 		$fields = parent::getCMSFields();
 		
 		$fields->removeByName('MediaDataObjects');
@@ -134,8 +133,6 @@ class BootstrapMediaCarouselElement extends BaseElement
 		$crop = OptionsetField::create('Crop', 'Crop', ['0' => 'no Crop', '1' => '16:9', '2' => '4:3', '3' => '5:2'])->setTitle('Crop');
 		
 		$fields->insertAfter($crop, 'Transition');
-		
-		
 		
 		$dataColumns = new GridFieldDataColumns();
 		$dataColumns->setDisplayFields(
@@ -159,10 +156,12 @@ class BootstrapMediaCarouselElement extends BaseElement
 
 
 		$multiClassConfig = new GridFieldAddNewMultiClass();
-		$multiClassConfig->setClasses([
+		/*$multiClassConfig->setClasses([
 			CarouselMediaImage::class,
 			CarouselMediaVideo::class,
-		]);
+		]);*/
+		
+		$multiClassConfig->setClasses($this->AvailableMediaObjects());
 
 
 		$config = GridFieldConfig::create()
@@ -228,7 +227,6 @@ class BootstrapMediaCarouselElement extends BaseElement
 	
 	public function convertSeconds($value, $digit = false)
 	{
-		
 		if($digit){
 			$value = preg_replace( '/,/', '.', $value);
 		}else{
@@ -236,7 +234,6 @@ class BootstrapMediaCarouselElement extends BaseElement
 		}
 		
 		return $value;
-		
 	}
 	
 	
@@ -353,6 +350,7 @@ class BootstrapMediaCarouselElement extends BaseElement
 		}
 		
 		//Debug::show($dataList);
+		//Backtrace::backtrace();
 		return $dataList;
 	}
 	
@@ -362,6 +360,31 @@ class BootstrapMediaCarouselElement extends BaseElement
 		parent::onBeforeWrite();
 		$this->SliderInterval = $this->convertSeconds($this->SliderInterval, true);
 		$this->Transition = $this->convertSeconds($this->Transition, true);
+	}
+	
+	
+	
+	public function AvailableMediaObjects()
+	{
+		$currentPath = __DIR__; // The current directory
+		//$parentPath = dirname($currentPath); // The parent directory
+		
+		$mediaExtensionFolder = $currentPath. '/mediaCarouselExtensions';
+		$objects      = [];
+
+		foreach (new DirectoryIterator($mediaExtensionFolder) as $file) {
+			if ($file->isFile()) {
+				$fileName  = $file->getFilename();
+				$fileParts = pathinfo($fileName);
+				// Only add PHP files
+				if ($fileParts['extension'] == 'php') {
+					array_push($objects, $fileParts['filename']);
+				}
+			}
+		}
+		// Sort strips alphabetically
+		asort($objects);
+		return $objects;
 	}
 	
 	

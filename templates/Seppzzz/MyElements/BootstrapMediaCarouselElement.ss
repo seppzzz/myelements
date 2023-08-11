@@ -3,7 +3,6 @@
 <% require css(seppzzz/myelements: css/slider.css) %>
 <% require javascript(seppzzz/myelements: javascript/slider.js) %>
 		
-	
 
 	<!--start carousel-container-->
 	<div class="carousel-container">  
@@ -139,30 +138,10 @@
 							
 							
 							
-							<%--
-									<% if $Top.FullSize %>
-										<img class=" img-fluidx <% if $Up.Up.Fade %> d-block <% end_if %> w-100 rounded " src="$Image.ScaleWidth(2400).CropHeight(600).URL" alt="$Image.Title">
-									<% else %>
-										
-										
-										<% if $Top.Crop != '0' %>
-											<img class=" img-fluid <% if $Up.Up.Fade %> d-block <% end_if %> w-100 rounded " src="$Image.ScaleWidth(1200).CropHeight($Top.getCroppedHeight($Top.Crop)).URL" alt="$Image.Title">
-											
-										<% else %>
-											<img class=" img-fluid <% if $Up.Up.Fade %> d-block <% end_if %> w-100 rounded " src="$Image.CropHeight(1200).URL" alt="$Image.Title">
-										<% end_if %>
-										
-											
-									<% end_if %>
-									
-									 <div class="carousel-caption d-none d-md-blockx">
-        								<h3 class="carousel-elementx captionx">$Caption Blabla</h3>
-        								<p>Some representative placeholder content for the $Top.addOrdinalSuffix($Pos).RAW slide.</p>
-     								 </div>
-										
-							--%>
-									
-									
+							
+							
+							
+			
 									
 							
 							
