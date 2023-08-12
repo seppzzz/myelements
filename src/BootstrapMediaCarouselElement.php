@@ -156,13 +156,12 @@ class BootstrapMediaCarouselElement extends BaseElement
 
 
 		$multiClassConfig = new GridFieldAddNewMultiClass();
+		$multiClassConfig->setClasses($this->AvailableMediaObjects());
 		/*$multiClassConfig->setClasses([
 			CarouselMediaImage::class,
 			CarouselMediaVideo::class,
 		]);*/
 		
-		$multiClassConfig->setClasses($this->AvailableMediaObjects());
-
 
 		$config = GridFieldConfig::create()
 			->removeComponentsByType(GridFieldAddNewButton::class)
